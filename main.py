@@ -3,6 +3,7 @@ import autopy
 import mediapipe as mp
 
 cap = cv2.VideoCapture(0)
+width, height = autopy.screen.size()
 
 hands = mp.solutions.hands.Hands(static_image_mode=False,
                          max_num_hands=1,
@@ -19,6 +20,10 @@ while True:
             h, w, _ = img.shape
             cx, cy = int(lm.x * w), int(lm.y * h)
             cv2.circle(img, (cx, cy), 3, (355, 0, 255))
+            if id == 8:
+                cv2.circle(img, (cx, cy), 25, (255, 0, 255), cv2.FILLED)
+                autopy.mouse.move(cx * width / w, cy * height / h)
+
         mpDraw.draw_landmarks(img, result.multi_hand_landmarks[0], mp.solutions.hands.HAND_CONNECTIONS)
     cv2.imshow('Handtrack', img)
     cv2.waitKey(1)
