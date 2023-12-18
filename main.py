@@ -4,29 +4,36 @@ import mediapipe as mp
 import math
 import numpy as np
 import pyautogui
-def cl(result):
-    x8 = result.multi_hand_landmarks[0].landmark[8].x
-    y8 = result.multi_hand_landmarks[0].landmark[8].y
-    x12 = result.multi_hand_landmarks[0].landmark[12].x
-    y12 = result.multi_hand_landmarks[0].landmark[12].y
-    s128 = math.hypot(x8 - x12, y8 - y12)
-    if s128 < 0.05:
+def cl(results):
+    a5x = results.multi_hand_landmarks[0].landmark[9].x
+    a5y = results.multi_hand_landmarks[0].landmark[9].y
+    a6x = results.multi_hand_landmarks[0].landmark[10].x
+    a6y = results.multi_hand_landmarks[0].landmark[10].y
+    a7x = results.multi_hand_landmarks[0].landmark[11].x
+    a7y = results.multi_hand_landmarks[0].landmark[11].y
+    a8x = results.multi_hand_landmarks[0].landmark[12].x
+    a8y = results.multi_hand_landmarks[0].landmark[12].y
+    a0x = results.multi_hand_landmarks[0].landmark[0].x
+    a0y = results.multi_hand_landmarks[0].landmark[0].y
+    if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
+                                                                                        a7y - a0y) < math.hypot(
+            a8x - a0x, a8y - a0y):
         return True
-    else:
-        return False
-def finger2(result):
-    x8 = result.multi_hand_landmarks[0].landmark[8].x
-    y8 = result.multi_hand_landmarks[0].landmark[8].y
-    x5 = result.multi_hand_landmarks[0].landmark[5].x
-    y5 = result.multi_hand_landmarks[0].landmark[5].y
-    x0 = result.multi_hand_landmarks[0].landmark[0].x
-    y0 = result.multi_hand_landmarks[0].landmark[0].y
-    s80 = math.hypot(x8 - x0, y8 - y0)
-    s50 = math.hypot(x5 - x0, y5 - y0)
-    if s50 < s80:
+def finger2(results):
+    a5x = results.multi_hand_landmarks[0].landmark[5].x
+    a5y = results.multi_hand_landmarks[0].landmark[5].y
+    a6x = results.multi_hand_landmarks[0].landmark[6].x
+    a6y = results.multi_hand_landmarks[0].landmark[6].y
+    a7x = results.multi_hand_landmarks[0].landmark[7].x
+    a7y = results.multi_hand_landmarks[0].landmark[7].y
+    a8x = results.multi_hand_landmarks[0].landmark[8].x
+    a8y = results.multi_hand_landmarks[0].landmark[8].y
+    a0x = results.multi_hand_landmarks[0].landmark[0].x
+    a0y = results.multi_hand_landmarks[0].landmark[0].y
+    if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
+                                                                                        a7y - a0y) < math.hypot(
+        a8x - a0x, a8y - a0y):
         return True
-    else:
-        return False
 
 
 
