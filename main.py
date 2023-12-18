@@ -2,16 +2,27 @@ import cv2
 import autopy
 import mediapipe as mp
 import math
-import time
-import numpy as np
 import pyautogui
 def cl(result):
     x8 = result.multi_hand_landmarks[0].landmark[8].x
     y8 = result.multi_hand_landmarks[0].landmark[8].y
     x12 = result.multi_hand_landmarks[0].landmark[12].x
     y12 = result.multi_hand_landmarks[0].landmark[12].y
-    s48 = math.hypot(x8 - x12, y8 - y12)
-    if s48 < 0.05:
+    s128 = math.hypot(x8 - x12, y8 - y12)
+    if s128 < 0.05:
+        return True
+    else:
+        return False
+def finger2(result):
+    x8 = result.multi_hand_landmarks[0].landmark[8].x
+    y8 = result.multi_hand_landmarks[0].landmark[8].y
+    x5 = result.multi_hand_landmarks[0].landmark[5].x
+    y5 = result.multi_hand_landmarks[0].landmark[5].y
+    x0 = result.multi_hand_landmarks[0].landmark[0].x
+    y0 = result.multi_hand_landmarks[0].landmark[0].y
+    s80 = math.hypot(x8 - x0, y8 - y0)
+    s50 = math.hypot(x5 - x0, y5 - y0)
+    if s50 < s80:
         return True
     else:
         return False
@@ -36,11 +47,12 @@ while True:
             h, w, _ = img.shape
             cx, cy = int(lm.x * w), int(lm.y * h)
             cv2.circle(img, (cx, cy), 3, (355, 0, 255))
-            if id == 8:
-                cv2.circle(img, (cx, cy), 25, (255, 0, 255), cv2.FILLED)
-                autopy.mouse.move(cx * width / w, cy * height / h)
-                if cl(result):
-                    pyautogui.click()
+            if finger2(result) and id == 8:
+                cv2.circle(img, (cx, cy), 15, (255, 0, 255), cv2.FILLED)
+                autopy.mouse.move((cx * width) / w, (cy * height) / (h + 300))
+
+                if cl(result) and finger2(result):
+                    autopy.mouse.click()
                     print(4)
                     #time.sleep(3)
         mpDraw.draw_landmarks(img, result.multi_hand_landmarks[0], mp.solutions.hands.HAND_CONNECTIONS)
