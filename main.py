@@ -8,9 +8,13 @@ import pyautogui
 def cl(result):
     x8 = result.multi_hand_landmarks[0].landmark[8].x
     y8 = result.multi_hand_landmarks[0].landmark[8].y
-    x4 = result.multi_hand_landmarks[0].landmark[4].x
-    y4 = result.multi_hand_landmarks[0].landmark[4].y
-    s48 = math.hypot(x8 - x4, y8 - y4)
+    x12 = result.multi_hand_landmarks[0].landmark[12].x
+    y12 = result.multi_hand_landmarks[0].landmark[12].y
+    s48 = math.hypot(x8 - x12, y8 - y12)
+    if s48 < 0.05:
+        return True
+    else:
+        return False
 
 
 
@@ -38,12 +42,11 @@ while True:
                 if cl(result):
                     pyautogui.click()
                     print(4)
-                    time.sleep(3)
+                    #time.sleep(3)
         mpDraw.draw_landmarks(img, result.multi_hand_landmarks[0], mp.solutions.hands.HAND_CONNECTIONS)
     #img = np.fliplr(img)
     cv2.imshow('Handtrack', img)
     cv2.waitKey(1)
-
 
 
 
