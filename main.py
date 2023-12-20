@@ -5,6 +5,7 @@ import math
 import numpy as np
 import pyautogui
 
+
 def cl(result):
     x8 = result.multi_hand_landmarks[0].landmark[8].x
     y8 = result.multi_hand_landmarks[0].landmark[8].y
@@ -15,6 +16,8 @@ def cl(result):
         return True
     else:
         return False
+
+
 def finger2(results):
     a5x = results.multi_hand_landmarks[0].landmark[5].x
     a5y = results.multi_hand_landmarks[0].landmark[5].y
@@ -26,10 +29,13 @@ def finger2(results):
     a8y = results.multi_hand_landmarks[0].landmark[8].y
     a0x = results.multi_hand_landmarks[0].landmark[0].x
     a0y = results.multi_hand_landmarks[0].landmark[0].y
-    if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x, a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
+    if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
+                                                                                        a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
         return True
     else:
         return False
+
+
 def finger3(results):
     a5x = results.multi_hand_landmarks[0].landmark[13].x
     a5y = results.multi_hand_landmarks[0].landmark[13].y
@@ -41,10 +47,12 @@ def finger3(results):
     a8y = results.multi_hand_landmarks[0].landmark[16].y
     a0x = results.multi_hand_landmarks[0].landmark[0].x
     a0y = results.multi_hand_landmarks[0].landmark[0].y
-    if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
+    if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
+                                                                                        a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
         return True
     else:
         return False
+
 
 def finger4(results):
     a5x = results.multi_hand_landmarks[0].landmark[17].x
@@ -58,8 +66,7 @@ def finger4(results):
     a0x = results.multi_hand_landmarks[0].landmark[0].x
     a0y = results.multi_hand_landmarks[0].landmark[0].y
     if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
-                                                                                        a7y - a0y) < math.hypot(
-            a8x - a0x, a8y - a0y):
+                                                                                        a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
         return True
     else:
         return False
@@ -69,12 +76,11 @@ cap = cv2.VideoCapture(0)
 width, height = autopy.screen.size()
 
 hands = mp.solutions.hands.Hands(static_image_mode=False,
-                         max_num_hands=1,
-                         min_tracking_confidence=0.5,
-                         min_detection_confidence=0.5)
-ans=0
+                                 max_num_hands=1,
+                                 min_tracking_confidence=0.3,
+                                 min_detection_confidence=0.3)
+ans = 0
 mpDraw = mp.solutions.drawing_utils
-print(width, height)
 while True:
     _, img = cap.read()
     result = hands.process(img)
@@ -90,15 +96,15 @@ while True:
                     autopy.mouse.move((width - (cx * width) / w), (cy * height) / (h))
 
                 if cl(result) and finger2(result) and finger3(result) and finger4(result):
-                    pyautogui.doubleClick()
-                    ans+=1
-                    print(ans)
-                    #time.sleep(3)
+                    pyautogui.scroll(-5)
+
+                elif cl(result) and finger2(result) and finger4(result):
+                    pyautogui.scroll(5)
+
                 elif cl(result) and finger2(result):
                     autopy.mouse.click()
+
         mpDraw.draw_landmarks(img, result.multi_hand_landmarks[0], mp.solutions.hands.HAND_CONNECTIONS)
     img = np.fliplr(img)
     cv2.imshow('Handtrack', img)
     cv2.waitKey(1)
-
-
