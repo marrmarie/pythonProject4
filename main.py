@@ -64,6 +64,7 @@ def finger4(results):
     a8x = results.multi_hand_landmarks[0].landmark[20].x
     a8y = results.multi_hand_landmarks[0].landmark[20].y
     a0x = results.multi_hand_landmarks[0].landmark[0].x
+
     a0y = results.multi_hand_landmarks[0].landmark[0].y
     if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
                                                                                         a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
