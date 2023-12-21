@@ -6,7 +6,7 @@ import numpy as np
 import pyautogui
 
 
-def cl(result):
+def cl(result):  # проверка, сведены ли пальцы
     x8 = result.multi_hand_landmarks[0].landmark[8].x
     y8 = result.multi_hand_landmarks[0].landmark[8].y
     x12 = result.multi_hand_landmarks[0].landmark[12].x
@@ -14,11 +14,9 @@ def cl(result):
     s128 = math.hypot(x8 - x12, y8 - y12)
     if s128 < 0.05:
         return True
-    else:
-        return False
 
 
-def finger2(results):
+def finger2(results):  # проверка выпрямлен ли второй палец
     a5x = results.multi_hand_landmarks[0].landmark[5].x
     a5y = results.multi_hand_landmarks[0].landmark[5].y
     a6x = results.multi_hand_landmarks[0].landmark[6].x
@@ -30,13 +28,12 @@ def finger2(results):
     a0x = results.multi_hand_landmarks[0].landmark[0].x
     a0y = results.multi_hand_landmarks[0].landmark[0].y
     if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
-                                                                                        a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
+                                                                                        a7y - a0y) < math.hypot(
+        a8x - a0x, a8y - a0y):
         return True
-    else:
-        return False
 
 
-def finger3(results):
+def finger3(results):  # проверка выпрямлен ли третий палец
     a5x = results.multi_hand_landmarks[0].landmark[13].x
     a5y = results.multi_hand_landmarks[0].landmark[13].y
     a6x = results.multi_hand_landmarks[0].landmark[14].x
@@ -48,13 +45,12 @@ def finger3(results):
     a0x = results.multi_hand_landmarks[0].landmark[0].x
     a0y = results.multi_hand_landmarks[0].landmark[0].y
     if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
-                                                                                        a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
+                                                                                        a7y - a0y) < math.hypot(
+        a8x - a0x, a8y - a0y):
         return True
-    else:
-        return False
 
 
-def finger4(results):
+def finger4(results):  # проверка выпрямлен ли четвертый палец
     a5x = results.multi_hand_landmarks[0].landmark[17].x
     a5y = results.multi_hand_landmarks[0].landmark[17].y
     a6x = results.multi_hand_landmarks[0].landmark[18].x
@@ -64,48 +60,48 @@ def finger4(results):
     a8x = results.multi_hand_landmarks[0].landmark[20].x
     a8y = results.multi_hand_landmarks[0].landmark[20].y
     a0x = results.multi_hand_landmarks[0].landmark[0].x
-
     a0y = results.multi_hand_landmarks[0].landmark[0].y
     if math.hypot(a5x - a0x, a5y - a0y) < math.hypot(a6x - a0x, a6y - a0y) < math.hypot(a7x - a0x,
-                                                                                        a7y - a0y) < math.hypot(a8x - a0x, a8y - a0y):
+                                                                                        a7y - a0y) < math.hypot(
+        a8x - a0x, a8y - a0y):
         return True
-    else:
-        return False
 
 
-cap = cv2.VideoCapture(0)
-width, height = autopy.screen.size()
+cap = cv2.VideoCapture(0)  # получение изображения с камеры
+width, height = autopy.screen.size()  # получение размеров экрана
 
+# обнаружние руки
 hands = mp.solutions.hands.Hands(static_image_mode=False,
                                  max_num_hands=1,
                                  min_tracking_confidence=0.3,
                                  min_detection_confidence=0.3)
-ans = 0
-mpDraw = mp.solutions.drawing_utils
-while True:
-    _, img = cap.read()
-    result = hands.process(img)
-    if result.multi_hand_landmarks:
-        for id, lm in enumerate(result.multi_hand_landmarks[0].landmark):
-            h, w, _ = img.shape
-            cx, cy = int(lm.x * w), int(lm.y * h)
 
-            cv2.circle(img, (cx, cy), 3, (355, 0, 255))
-            if finger2(result) and id == 8:
+mpDraw = mp.solutions.drawing_utils  # создание объекта для дальнейшего рисования линий на руке
+while True:  # осоновной цикл программы
+    _, img = cap.read()  # считывае изображения с камеры
+    result = hands.process(img)  # обнаружение точек на руке
+    if result.multi_hand_landmarks:  # проверка, рука и точки на экране
+        for id, lm in enumerate(result.multi_hand_landmarks[0].landmark):  # перебор всех точек на руке
+            h, w, _ = img.shape  # получение размеров изображения
+            cx, cy = int(lm.x * w), int(lm.y * h)  # координаты рассматриваемой точки
+
+            cv2.circle(img, (cx, cy), 3, (355, 0, 255))  # рисование кружка на точке
+            if finger2(result) and id == 8:  # проверка на то, выпрямлен ли второй палец и есть ли 8 точка (подушечка второго пальца)
                 cv2.circle(img, (cx, cy), 15, (255, 0, 255), cv2.FILLED)
-                if cx > 15 and cx < width - 180 and cy > 0 and cy < height:
-                    autopy.mouse.move((width - (cx * width) / w), (cy * height) / (h))
+                if cx > 15 and cx < width - 180 and cy > 0 and cy < height:  # проверка координат пальца на то, находится ли она в рамках экрана
+                    autopy.mouse.move((width - (cx * width) / w), (cy * height) / (h))  # передвижение мышки на указанные координаты
 
-                if cl(result) and finger2(result) and finger3(result) and finger4(result):
-                    pyautogui.scroll(-5)
+                if cl(result) and finger2(result) and finger3(result) and finger4(result):  # обнаружение жеста для прокрутки вниз
+                    pyautogui.scroll(-5)  # прокрутка на 5 единиц вниз
 
-                elif cl(result) and finger2(result) and finger4(result):
-                    pyautogui.scroll(5)
+                elif cl(result) and finger2(result) and finger4(result):  # обнаружение жеста для прокрутки вверх
+                    pyautogui.scroll(5)  # прокрутка на 5 единиц вверх
 
-                elif cl(result) and finger2(result):
-                    autopy.mouse.click()
+                elif cl(result) and finger2(result):  # обнаружение жеста для клика
+                    autopy.mouse.click()  # клик
 
-        mpDraw.draw_landmarks(img, result.multi_hand_landmarks[0], mp.solutions.hands.HAND_CONNECTIONS)
-    img = np.fliplr(img)
-    cv2.imshow('Handtrack', img)
-    cv2.waitKey(1)
+        mpDraw.draw_landmarks(img, result.multi_hand_landmarks[0], mp.solutions.hands.HAND_CONNECTIONS)  # рисование линий между точками на руке
+
+    img = np.fliplr(img)  # отзеркаливание изображения, чтобы курсор двигался в нужную сторону
+    cv2.imshow('Handtrack', img)  # показ изображения
+    cv2.waitKey(1)  # команда, которая позволяет окну с изображением не закрываться
