@@ -5,7 +5,7 @@ import math
 import numpy as np
 import pyautogui
 
-
+# проверка пальцев
 def cl(result):  # проверка, сведены ли пальцы
     x8 = result.multi_hand_landmarks[0].landmark[8].x
     y8 = result.multi_hand_landmarks[0].landmark[8].y
